@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo List App</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Login Screen -->
+    <div id="loginScreen" class="login-screen">
+        <div class="login-container">
+            <div class="login-header">
+                <h1>Welcome to TodoApp</h1>
+                <p>Please enter your credentials to continue</p>
+            </div>
+
+            <!-- Step 1: Email/Password -->
+            <div id="step1Form" class="login-form">
+                <div class="input-group">
+                    <label for="emailInput">Email</label>
+                    <input type="email" id="emailInput" placeholder="Enter your email" autocomplete="email">
+                </div>
+                <div class="input-group">
+                    <label for="passwordInput">Password</label>
+                    <input type="password" id="passwordInput" placeholder="Enter your password" autocomplete="current-password">
+                </div>
+                <div class="login-actions">
+                    <button id="loginBtn" class="login-button">Login</button>
+                    <button id="guestBtn" class="guest-button">Continue as Guest</button>
+                </div>
+                <div class="login-footer">
+                    <p>Demo credentials: <strong>admin@todo.com / password</strong></p>
+                </div>
+            </div>
+
+            <!-- Step 2: Two-Factor Authentication -->
+            <div id="step2Form" class="login-form" style="display: none;">
+                <div class="twofa-header">
+                    <h2>Two-Factor Authentication</h2>
+                    <p>Please verify your identity for <span id="userEmail"></span></p>
+                </div>
+
+                <div class="twofa-tabs">
+                    <button id="emailTab" class="tab-button active">Email Code</button>
+                    <button id="authTab" class="tab-button">Authenticator</button>
+                </div>
+
+                <!-- Email Verification Method -->
+                <div id="emailMethod" class="twofa-method">
+                    <div class="method-description">
+                        <p>We've sent a 6-digit code to your email address.</p>
+                    </div>
+                    <div class="input-group">
+                        <label for="emailCodeInput">Enter Code</label>
+                        <input type="text" id="emailCodeInput" placeholder="000000" maxlength="6" autocomplete="one-time-code">
+                    </div>
+                    <button id="resendEmailBtn" class="resend-button">Resend Code</button>
+                </div>
+
+                <!-- Google Authenticator Method -->
+                <div id="authMethod" class="twofa-method" style="display: none;">
+                    <div class="method-description">
+                        <p>Enter the 6-digit code from your authenticator app.</p>
+                    </div>
+                    <div class="input-group">
+                        <label for="authCodeInput">Authenticator Code</label>
+                        <input type="text" id="authCodeInput" placeholder="000000" maxlength="6" autocomplete="one-time-code">
+                    </div>
+
+                    <!-- First-time setup -->
+                    <div id="qrSetup" class="qr-setup" style="display: none;">
+                        <h4>First Time Setup</h4>
+                        <p>Add this account to your authenticator app:</p>
+                        <div class="setup-key">
+                            <strong>Manual Entry Key:</strong>
+                            <code id="setupKey"></code>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="twofa-actions">
+                    <button id="verifyBtn" class="verify-button">Verify</button>
+                    <button id="backBtn" class="back-button">Back to Login</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main App -->
+    <div id="mainApp" class="main-app" style="display: none;">
+        <div class="app-header">
+            <div class="user-info">
+                <span id="userWelcome">Welcome!</span>
+                <button id="logoutBtn" class="logout-button">Logout</button>
+            </div>
+        </div>
+        <div class="container">
+        <h1>Todo List</h1>
+        <div class="stats-container">
+            <div class="stat-item">
+                <span class="stat-number" id="totalTasks">0</span>
+                <span class="stat-label">Total</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number" id="completedTasks">0</span>
+                <span class="stat-label">Completed</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number" id="pendingTasks">0</span>
+                <span class="stat-label">Pending</span>
+            </div>
+        </div>
+        <div class="input-container">
+            <input type="text" id="todoInput" placeholder="Add a new task...">
+            <select id="prioritySelect">
+                <option value="low">Low Priority</option>
+                <option value="medium" selected>Medium Priority</option>
+                <option value="high">High Priority</option>
+            </select>
+            <select id="categorySelect">
+                <option value="general">General</option>
+                <option value="work">Work</option>
+                <option value="personal">Personal</option>
+                <option value="shopping">Shopping</option>
+                <option value="health">Health</option>
+            </select>
+            <input type="datetime-local" id="deadlineInput">
+            <button id="addBtn">Add Task</button>
+        </div>
+        <div class="filter-container">
+            <input type="text" id="searchInput" placeholder="Search tasks...">
+            <select id="filterCategory">
+                <option value="all">All Categories</option>
+                <option value="general">General</option>
+                <option value="work">Work</option>
+                <option value="personal">Personal</option>
+                <option value="shopping">Shopping</option>
+                <option value="health">Health</option>
+            </select>
+            <select id="filterStatus">
+                <option value="all">All Tasks</option>
+                <option value="pending">Pending</option>
+                <option value="completed">Completed</option>
+            </select>
+            <select id="filterPriority">
+                <option value="all">All Priorities</option>
+                <option value="high">High Priority</option>
+                <option value="medium">Medium Priority</option>
+                <option value="low">Low Priority</option>
+            </select>
+            <button id="historyBtn" class="history-btn">View History</button>
+        </div>
+        <ul id="todoList"></ul>
+    </div>
+
+    <!-- Completed Tasks History Modal -->
+    <div id="historyModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Completed Tasks History</h2>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div id="historyList"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <script src="database.js"></script>
+    <script src="auth.js"></script>
+    <script src="twofa.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
