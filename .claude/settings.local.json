@@ -22,7 +22,8 @@
       "Bash(npm uninstall:*)",
       "Bash(npm run build:*)",
       "Bash(git commit:*)",
-      "Bash(git remote set-url:*)"
+      "Bash(git remote set-url:*)",
+      "WebFetch(domain:huzaifa930-code.github.io)"
     ],
     "deny": [],
     "ask": []
