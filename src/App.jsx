@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react'
-import LoginScreen from './components/LoginScreen'
 import TodoApp from './components/TodoApp'
+import LoginScreen from './components/LoginScreen'
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [currentUser, setCurrentUser] = useState(null)
 
   useEffect(() => {
-    const savedUser = localStorage.getItem('todoapp_user')
+    const savedUser = localStorage.getItem('todo_user')
     if (savedUser) {
       setCurrentUser(JSON.parse(savedUser))
       setIsLoggedIn(true)
@@ -18,24 +18,24 @@ function App() {
     setCurrentUser(user)
     setIsLoggedIn(true)
     if (user.username !== 'guest') {
-      localStorage.setItem('todoapp_user', JSON.stringify(user))
+      localStorage.setItem('todo_user', JSON.stringify(user))
     }
   }
 
   const handleLogout = () => {
     setCurrentUser(null)
     setIsLoggedIn(false)
-    localStorage.removeItem('todoapp_user')
+    localStorage.removeItem('todo_user')
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-gray-950 dark:via-green-950 dark:to-gray-900">
+    <>
       {!isLoggedIn ? (
         <LoginScreen onLogin={handleLogin} />
       ) : (
         <TodoApp user={currentUser} onLogout={handleLogout} />
       )}
-    </div>
+    </>
   )
 }
 
